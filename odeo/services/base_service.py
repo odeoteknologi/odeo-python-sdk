@@ -1,6 +1,12 @@
+import json
 import time
+import urllib.parse
+from urllib.parse import urljoin
 
+from requests import Response
 from requests_oauthlib import OAuth2Session
+
+from odeo.api_signature import generate_signature
 
 
 class BaseService(object):
@@ -17,12 +23,6 @@ class BaseService(object):
         self._client_secret = client_secret
         self._signing_key = signing_key
 
-    def _format_validation_headers(self, signature: str):
-        return {
-            'X-Odeo-Timestamp': str(int(time.time())),
-            'X-Odeo-Signature': signature
-        }
-
     def request_access_token(self) -> str:
         if not self._oauth.authorized:
             self._oauth.fetch_token(
@@ -32,3 +32,44 @@ class BaseService(object):
             )
 
         return self._oauth.access_token
+
+    def request(
+            self,
+            method: str,
+            path: str,
+            params: dict = {}
+    ) -> Response | None:
+        query_string = urllib.parse.unquote(urllib.parse.urlencode(params)) if method == 'GET' else ''
+        request_body = ''
+
+        if method in ['POST', 'PUT'] and params != {}:
+            request_body = json.dumps(params, separators=(',', ':'))
+
+        timestamp = int(time.time())
+        signature = generate_signature(
+            method,
+            path,
+            query_string,
+            self._oauth.access_token,
+            timestamp,
+            request_body,
+            self._signing_key
+        )
+
+        url = urljoin(self._base_url, path)
+        headers = {
+            'X-Odeo-Timestamp': str(timestamp),
+            'X-Odeo-Signature': signature
+        }
+
+        if method == 'GET':
+            headers |= {'Accept': 'application/json'}
+            return self._oauth.get(url, params=params, headers=headers)
+        elif method == 'POST':
+            headers |= {'Content-Type': 'application/json'}
+            return self._oauth.post(url, json=params, headers=headers)
+        elif method == 'PUT':
+            headers |= {'Content-Type': 'application/json'}
+            return self._oauth.put(url, json=params, headers=headers)
+
+        return None
