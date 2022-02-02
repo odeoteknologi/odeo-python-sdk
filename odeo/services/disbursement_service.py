@@ -18,6 +18,10 @@ class DisbursementService(BaseService):
                     'GET', path, '', self._oauth.access_token, int(time.time()), '', self._signing_key
                 )
             )
-        ).json()
+        )
+        content = response.json()
 
-        return list(map(lambda bank: Bank.from_json(bank), response['banks']))
+        if response.status_code != 200 or 'banks' not in content:
+            return None
+
+        return list(map(lambda bank: Bank.from_json(bank), content['banks']))
