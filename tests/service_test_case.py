@@ -17,9 +17,7 @@ class ServiceTestCase(unittest.TestCase):
     client = odeo.client.Client(client_id, client_secret, signing_key)
     adapter = requests_mock.Adapter()
 
-    def __init__(self, method_name='runTest'):
-        super().__init__(methodName=method_name)
-
+    def setUp(self) -> None:
         self.client.set_transport_adapter('https://', self.adapter)
         self.adapter.register_uri(
             'POST',
