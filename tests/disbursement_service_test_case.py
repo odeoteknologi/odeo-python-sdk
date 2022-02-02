@@ -1,5 +1,4 @@
 import json
-import time
 import unittest
 
 import odeo.client
@@ -33,6 +32,20 @@ class DisbursementServiceTestCase(ServiceTestCase):
             [Bank(bank_id=1, name='BCA', bank_code='014', swift_code='CENAIDJA')],
             self.client.disbursement.get_banks()
         )
+
+    def test_get_banks_failed(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/dg/v1/banks',
+            status_code=400,
+            text=json.dumps({
+                'message': 'Test error message',
+                'status_code': 400,
+                'error_code': 10000
+            })
+        )
+
+        self.assertEqual(None, self.client.disbursement.get_banks())
 
 
 if __name__ == '__main__':
