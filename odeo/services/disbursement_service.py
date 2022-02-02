@@ -13,10 +13,8 @@ class DisbursementService(BaseService):
         response = self.request('GET', '/dg/v1/banks')
         content = response.json()
 
-        if response.status_code != 200 or 'banks' not in content:
-            return None
-
-        return list(map(lambda bank: Bank.from_json(bank), content['banks']))
+        if response.status_code == 200 and 'banks' in content:
+            return list(map(lambda bank: Bank.from_json(bank), content['banks']))
 
     def bank_account_inquiry(
             self,
