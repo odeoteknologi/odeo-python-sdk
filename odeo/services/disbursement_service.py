@@ -1,5 +1,6 @@
 from odeo.exceptions.insufficient_balance_error import InsufficientBalanceError
 from odeo.exceptions.invalid_bank_error import InvalidBankError
+from odeo.exceptions.resourse_not_found_error import ResourceNotFoundError
 from odeo.models.bank import Bank
 from odeo.models.bank_account import BankAccount
 from odeo.models.disbursement import Disbursement
@@ -42,6 +43,8 @@ class DisbursementService(BaseService):
                 raise InvalidBankError(content['message'])
             elif content['error_code'] == 40011:
                 raise InsufficientBalanceError(content['message'])
+            elif content['error_code'] == 20002:
+                raise ResourceNotFoundError(content['message'])
         elif response.status_code == 200:
             return success(content)
 
@@ -75,4 +78,10 @@ class DisbursementService(BaseService):
     def get_disbursement(
             self, by_disbursement_id: int = None, by_reference_id: str = None
     ):
-        pass
+        path = f"/dg/v1/disbursements/{by_disbursement_id}" if by_disbursement_id is not None else ''
+        path = f"/dg/v1/disbursements/reference-id/{by_reference_id}" if by_reference_id is not None else path
+        response = self.request('GET', path)
+
+        return self._raise_exception_on_error(
+            response.json(), response, lambda c: Disbursement.from_json(c)
+        )
