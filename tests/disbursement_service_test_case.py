@@ -5,6 +5,7 @@ from datetime import datetime
 import odeo.client
 from odeo.exceptions.insufficient_balance_error import InsufficientBalanceError
 from odeo.exceptions.invalid_bank_error import InvalidBankError
+from odeo.exceptions.resourse_not_found_error import ResourceNotFoundError
 from odeo.models.bank import Bank
 from odeo.models.bank_account import BankAccount
 from odeo.models.disbursement import Disbursement
@@ -261,6 +262,129 @@ class DisbursementServiceTestCase(ServiceTestCase):
             )
         self.assertEqual(str(ctx.exception), message)
         self.assertEqual(ctx.exception.error_code, error_code)
+
+    def test_get_disbursement_by_disbursement_id(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/dg/v1/disbursements/123',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'Ds7dqFQTYcpY176I+hk1Vwi4fC6kYyNYBo4CsIsIZB4='
+            },
+            text=json.dumps({
+                'disbursement_id': '123',
+                'bank_id': 1,
+                'bank_code': '014',
+                'account_number': '1234567890',
+                'customer_name': 'Agus Hartono',
+                'amount': 1000000,
+                'fee': 5000,
+                'description': 'Example fund disbursement',
+                'reference_id': 'EXAMPLE-REF-ID-001',
+                'status': 10000,
+                'created_at': '1612137600'
+            })
+        )
+
+        self.assertEqual(
+            Disbursement(
+                '123',
+                1,
+                '014',
+                '1234567890',
+                'Agus Hartono',
+                1000000,
+                5000,
+                'Example fund disbursement',
+                'EXAMPLE-REF-ID-001',
+                10000,
+                datetime(2021, 2, 1)
+            ),
+            self.client.disbursement.get_disbursement(by_disbursement_id=123)
+        )
+
+    def test_get_disbursement_by_disbursement_id_failed_not_exist(self):
+        self._create_failed_get_disbursement_test(
+            '/dg/v1/disbursements/123',
+            'Ds7dqFQTYcpY176I+hk1Vwi4fC6kYyNYBo4CsIsIZB4=',
+            lambda: self.client.disbursement.get_disbursement(by_disbursement_id=123)
+        )
+
+    def _create_failed_get_disbursement_test(self, path, signature, callback):
+        message = 'Disbursement not found'
+        error_code = 20002
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + path,
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': signature
+            },
+            status_code=400,
+            text=json.dumps({
+                'message': message,
+                'status_code': 400,
+                'error_code': error_code
+            })
+        )
+        with self.assertRaises(ResourceNotFoundError) as ctx:
+            callback()
+        self.assertEqual(str(ctx.exception), message)
+        self.assertEqual(ctx.exception.error_code, error_code)
+
+    def test_get_disbursement_by_reference_id(self):
+        path = '/dg/v1/disbursements/reference-id/EXAMPLE-REF-ID-001'
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + path,
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'bS1/9owpQa5eIisCNMZ+E4c7n/XXx7P5fvh9DQ40+gk='
+            },
+            text=json.dumps({
+                'disbursement_id': '123',
+                'bank_id': 1,
+                'bank_code': '014',
+                'account_number': '1234567890',
+                'customer_name': 'Agus Hartono',
+                'amount': 1000000,
+                'fee': 5000,
+                'description': 'Example fund disbursement',
+                'reference_id': 'EXAMPLE-REF-ID-001',
+                'status': 10000,
+                'created_at': '1612137600'
+            })
+        )
+
+        self.assertEqual(
+            Disbursement(
+                '123',
+                1,
+                '014',
+                '1234567890',
+                'Agus Hartono',
+                1000000,
+                5000,
+                'Example fund disbursement',
+                'EXAMPLE-REF-ID-001',
+                10000,
+                datetime(2021, 2, 1)
+            ),
+            self.client.disbursement.get_disbursement(by_reference_id='EXAMPLE-REF-ID-001')
+        )
+
+    def test_get_disbursement_by_reference_id_failed_disbursement_not_found(self):
+        self._create_failed_get_disbursement_test(
+            '/dg/v1/disbursements/reference-id/EXAMPLE-REF-ID-001',
+            'bS1/9owpQa5eIisCNMZ+E4c7n/XXx7P5fvh9DQ40+gk=',
+            lambda: self.client.disbursement.get_disbursement(by_reference_id='EXAMPLE-REF-ID-001')
+        )
 
 
 if __name__ == '__main__':
