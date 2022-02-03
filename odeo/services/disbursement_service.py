@@ -2,20 +2,20 @@ from odeo.exceptions.insufficient_balance_error import InsufficientBalanceError
 from odeo.exceptions.invalid_bank_error import InvalidBankError
 from odeo.models.bank import Bank
 from odeo.models.bank_account import BankAccount
-from odeo.services.base_service import BaseService
+from odeo.services.base_service import BaseService, authenticated
 
 
 class DisbursementService(BaseService):
 
+    @authenticated
     def get_banks(self):
-        self.request_access_token()
-
         response = self.request('GET', '/dg/v1/banks')
         content = response.json()
 
         if response.status_code == 200 and 'banks' in content:
             return list(map(lambda bank: Bank.from_json(bank), content['banks']))
 
+    @authenticated
     def bank_account_inquiry(
             self,
             account_number: str,
@@ -23,8 +23,6 @@ class DisbursementService(BaseService):
             customer_name: str,
             with_validation: bool = False
     ):
-        self.request_access_token()
-
         response = self.request('POST', '/dg/v1/bank-account-inquiry', {
             'account_number': account_number,
             'bank_id': bank_id,
@@ -41,6 +39,7 @@ class DisbursementService(BaseService):
         elif response.status_code == 200:
             return BankAccount.from_json(response.json())
 
+    @authenticated
     def create_disbursement(
             self,
             account_number: str,
@@ -52,6 +51,7 @@ class DisbursementService(BaseService):
     ):
         pass
 
+    @authenticated
     def get_disbursement(
             self, by_disbursement_id: int = None, by_reference_id: str = None
     ):

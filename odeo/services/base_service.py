@@ -1,3 +1,4 @@
+import functools
 import json
 import time
 import urllib.parse
@@ -7,6 +8,15 @@ from requests import Response
 from requests_oauthlib import OAuth2Session
 
 from odeo.api_signature import generate_signature
+
+
+def authenticated(func):
+    @functools.wraps(func)
+    def wrapper_decorator(self: BaseService, *args, **kwargs):
+        self.request_access_token()
+        return func(self, *args, **kwargs)
+
+    return wrapper_decorator
 
 
 class BaseService(object):
