@@ -1,12 +1,13 @@
-import datetime
 import json
 import unittest
+from datetime import datetime
 
 import odeo.client
 from odeo.exceptions.insufficient_balance_error import InsufficientBalanceError
 from odeo.exceptions.invalid_bank_error import InvalidBankError
 from odeo.models.bank import Bank
 from odeo.models.bank_account import BankAccount
+from odeo.models.disbursement import Disbursement
 from tests.service_test_case import ServiceTestCase
 
 
@@ -82,7 +83,7 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 'Agus Hartono',
                 1000,
                 50000,
-                datetime.datetime(2021, 2, 1),
+                datetime(2021, 2, 1),
                 '123',
                 100
             ),
@@ -121,6 +122,142 @@ class DisbursementServiceTestCase(ServiceTestCase):
         with self.assertRaises(error) as ctx:
             self.client.disbursement.bank_account_inquiry(
                 '1234567890', 1, 'Agus Hartono', True
+            )
+        self.assertEqual(str(ctx.exception), message)
+        self.assertEqual(ctx.exception.error_code, error_code)
+
+    def test_create_disbursement(self):
+        self.adapter.register_uri(
+            'POST',
+            odeo.client.DEVELOPMENT_BASE_URL + '/dg/v1/disbursements',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Content-Type': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'YrWxeSVGG8/Hn2zMGWfzuNutW5UNJMLyXlsDBQFlWfQ='
+            },
+            text=json.dumps({
+                'disbursement_id': '123',
+                'bank_id': 1,
+                'bank_code': '014',
+                'account_number': '1234567890',
+                'customer_name': 'Agus Hartono',
+                'amount': 1000000,
+                'fee': 5000,
+                'description': 'Example fund disbursement',
+                'reference_id': 'EXAMPLE-REF-ID-001',
+                'status': 10000,
+                'created_at': '1612137600'
+            })
+        )
+
+        self.assertEqual(
+            Disbursement(
+                '123',
+                1,
+                '014',
+                '1234567890',
+                'Agus Hartono',
+                1000000,
+                5000,
+                'Example fund disbursement',
+                'EXAMPLE-REF-ID-001',
+                10000,
+                datetime(2021, 2, 1)
+            ),
+            self.client.disbursement.create_disbursement(
+                '1234567890',
+                1000000,
+                1,
+                'Agus Hartono',
+                'EXAMPLE-REF-ID-001',
+                'Example fund disbursement'
+            )
+        )
+
+    def test_create_disbursement_without_description(self):
+        self.adapter.register_uri(
+            'POST',
+            odeo.client.DEVELOPMENT_BASE_URL + '/dg/v1/disbursements',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Content-Type': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'JmIv/2S7NyOotzi3dGYrhW7Qc8Mat3GU5ANcW8/qumA='
+            },
+            text=json.dumps({
+                'disbursement_id': '123',
+                'bank_id': 1,
+                'bank_code': '014',
+                'account_number': '1234567890',
+                'customer_name': 'Agus Hartono',
+                'amount': 1000000,
+                'fee': 5000,
+                # 'description': '',
+                'reference_id': 'EXAMPLE-REF-ID-001',
+                'status': 10000,
+                'created_at': '1612137600'
+            })
+        )
+
+        self.assertEqual(
+            Disbursement(
+                '123',
+                1,
+                '014',
+                '1234567890',
+                'Agus Hartono',
+                1000000,
+                5000,
+                None,
+                'EXAMPLE-REF-ID-001',
+                10000,
+                datetime(2021, 2, 1)
+            ),
+            self.client.disbursement.create_disbursement(
+                '1234567890',
+                1000000,
+                1,
+                'Agus Hartono',
+                'EXAMPLE-REF-ID-001'
+            )
+        )
+
+    def test_create_disbursement_failed_invalid_bank(self):
+        self._create_failed_create_disbursements_test(
+            InvalidBankError, 40002, 'Unknown error: INVALID BANK'
+        )
+
+    def test_create_disbursement_failed_insufficient_balance(self):
+        self._create_failed_create_disbursements_test(
+            InsufficientBalanceError, 40011, 'Unknown error: INSUFFICIENT BALANCE'
+        )
+
+    def _create_failed_create_disbursements_test(self, error, error_code, message):
+        self.adapter.register_uri(
+            'POST',
+            odeo.client.DEVELOPMENT_BASE_URL + '/dg/v1/disbursements',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Content-Type': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'YrWxeSVGG8/Hn2zMGWfzuNutW5UNJMLyXlsDBQFlWfQ='
+            },
+            status_code=400,
+            text=json.dumps({
+                'message': message,
+                'status_code': 400,
+                'error_code': error_code
+            })
+        )
+        with self.assertRaises(error) as ctx:
+            self.client.disbursement.create_disbursement(
+                '1234567890',
+                1000000,
+                1,
+                'Agus Hartono',
+                'EXAMPLE-REF-ID-001',
+                'Example fund disbursement'
             )
         self.assertEqual(str(ctx.exception), message)
         self.assertEqual(ctx.exception.error_code, error_code)
