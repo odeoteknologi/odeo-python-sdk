@@ -11,8 +11,8 @@ class Bank:
     @classmethod
     def from_json(cls, json):
         return Bank(
-            bank_id=json['bank_id'],
-            name=json['name'],
-            bank_code=json['bank_code'],
-            swift_code=json['swift_code']
+            bank_id=json.get('bank_id'),
+            name=json.get('name'),
+            bank_code=json.get('bank_code'),
+            swift_code=json.get('swift_code')
         )

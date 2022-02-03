@@ -16,14 +16,18 @@ class BankAccount:
 
     @classmethod
     def from_json(cls, json):
+        created_at = json.get('created_at')
+        if created_at is not None:
+            created_at = datetime.utcfromtimestamp(float(created_at))
+
         return BankAccount(
-            bank_id=json['bank_id'],
-            account_number=json['account_number'],
-            account_name=json['account_name'],
-            customer_name=json['customer_name'],
-            fee=json['fee'],
-            status=json['status'],
-            created_at=datetime.utcfromtimestamp(float(json['created_at'])),
-            bank_account_inquiry_id=json['bank_account_inquiry_id'],
-            validity=json['validity']
+            bank_id=json.get('bank_id'),
+            account_number=json.get('account_number'),
+            account_name=json.get('account_name'),
+            customer_name=json.get('customer_name'),
+            fee=json.get('fee'),
+            status=json.get('status'),
+            created_at=created_at,
+            bank_account_inquiry_id=json.get('bank_account_inquiry_id'),
+            validity=json.get('validity')
         )
