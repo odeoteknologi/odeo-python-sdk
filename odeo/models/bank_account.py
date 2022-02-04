@@ -1,5 +1,15 @@
 from dataclasses import dataclass
 from datetime import datetime
+from enum import Enum
+
+
+class Status(Enum):
+    COMPLETED_INQUIRY = 50000
+    FAILED_INQUIRY = 90000
+    WRONG_BANK_ACCOUNT_NUMBER = 90001
+    CLOSED_BANK_ACCOUNT = 90003
+    INQUIRY_REJECTED_BY_THE_VENDOR_BANK = 90004
+    INQUIRY_VENDOR_BANK_IS_DOWN = 90005
 
 
 @dataclass
@@ -9,7 +19,7 @@ class BankAccount:
     account_name: str
     customer_name: str
     fee: int
-    status: int
+    status: Status
     created_at: datetime
     bank_account_inquiry_id: str
     validity: int
@@ -26,7 +36,7 @@ class BankAccount:
             account_name=json.get('account_name'),
             customer_name=json.get('customer_name'),
             fee=json.get('fee'),
-            status=json.get('status'),
+            status=Status(json.get('status')),
             created_at=created_at,
             bank_account_inquiry_id=json.get('bank_account_inquiry_id'),
             validity=json.get('validity')
