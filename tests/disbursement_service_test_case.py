@@ -7,7 +7,7 @@ from odeo.exceptions.insufficient_balance_error import InsufficientBalanceError
 from odeo.exceptions.invalid_bank_error import InvalidBankError
 from odeo.exceptions.resourse_not_found_error import ResourceNotFoundError
 from odeo.models.bank import Bank
-from odeo.models.bank_account import BankAccount
+from odeo.models.bank_account import BankAccount, Status as BankAccountStatus
 from odeo.models.disbursement import Disbursement, Status as DisbursementStatus
 from tests.service_test_case import ServiceTestCase
 
@@ -83,7 +83,7 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 'Agus Hartono',
                 'Agus Hartono',
                 1000,
-                50000,
+                BankAccountStatus.COMPLETED_INQUIRY,
                 datetime(2021, 2, 1),
                 '123',
                 100
