@@ -8,7 +8,7 @@ from odeo.exceptions.invalid_bank_error import InvalidBankError
 from odeo.exceptions.resourse_not_found_error import ResourceNotFoundError
 from odeo.models.bank import Bank
 from odeo.models.bank_account import BankAccount
-from odeo.models.disbursement import Disbursement
+from odeo.models.disbursement import Disbursement, Status as DisbursementStatus
 from tests.service_test_case import ServiceTestCase
 
 
@@ -163,7 +163,7 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 5000,
                 'Example fund disbursement',
                 'EXAMPLE-REF-ID-001',
-                10000,
+                DisbursementStatus.PENDING_DISBURSE_INQUIRY,
                 datetime(2021, 2, 1)
             ),
             self.client.disbursement.create_disbursement(
@@ -212,7 +212,7 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 5000,
                 None,
                 'EXAMPLE-REF-ID-001',
-                10000,
+                DisbursementStatus.PENDING_DISBURSE_INQUIRY,
                 datetime(2021, 2, 1)
             ),
             self.client.disbursement.create_disbursement(
@@ -299,7 +299,7 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 5000,
                 'Example fund disbursement',
                 'EXAMPLE-REF-ID-001',
-                10000,
+                DisbursementStatus.PENDING_DISBURSE_INQUIRY,
                 datetime(2021, 2, 1)
             ),
             self.client.disbursement.get_disbursement(by_disbursement_id=123)
@@ -373,7 +373,7 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 5000,
                 'Example fund disbursement',
                 'EXAMPLE-REF-ID-001',
-                10000,
+                DisbursementStatus.PENDING_DISBURSE_INQUIRY,
                 datetime(2021, 2, 1)
             ),
             self.client.disbursement.get_disbursement(by_reference_id='EXAMPLE-REF-ID-001')
