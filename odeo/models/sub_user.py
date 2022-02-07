@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class SubUser:
-    user_id: int
+    user_id: int | str
     name: str
     phone_number: str
     email: str
