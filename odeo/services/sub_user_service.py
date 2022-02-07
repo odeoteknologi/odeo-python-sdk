@@ -12,8 +12,20 @@ class SubUserService(BaseService):
 
         return sub_users, content['next_page_token']
 
+    @authenticated
     def create_sub_user(self, email: str, name: str, phone_number: str):
-        pass
+        response = self.request(
+            'POST', '/sub-users', {'email': email, 'name': name, 'phone_number': phone_number}
+        )
 
-    def update_sub_user(self, email: str, name: str, phone_number: str):
-        pass
+        return self._raise_exception_on_error(response, lambda c: SubUser.from_json(c))
+
+    @authenticated
+    def update_sub_user(self, user_id: int, email: str, name: str, phone_number: str):
+        response = self.request(
+            'PUT',
+            f'/sub-users/{user_id}',
+            {'email': email, 'name': name, 'phone_number': phone_number}
+        )
+
+        return self._raise_exception_on_error(response, lambda c: SubUser.from_json(c))
