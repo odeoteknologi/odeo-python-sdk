@@ -386,6 +386,13 @@ class DisbursementServiceTestCase(ServiceTestCase):
             lambda: self.client.disbursement.get_disbursement(by_reference_id='EXAMPLE-REF-ID-001')
         )
 
+    def test_get_disbursement_mutually_exclusive_parameters(self):
+        with self.assertRaises(AssertionError):
+            self.client.disbursement.get_disbursement()
+
+        with self.assertRaises(AssertionError):
+            self.client.disbursement.get_disbursement(by_disbursement_id=123, by_reference_id='123')
+
 
 if __name__ == '__main__':
     unittest.main()
