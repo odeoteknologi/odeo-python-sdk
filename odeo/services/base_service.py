@@ -8,6 +8,11 @@ from requests import Response
 from requests_oauthlib import OAuth2Session
 
 from odeo.api_signature import generate_signature
+from odeo.exceptions.general_error import GeneralError
+from odeo.exceptions.input_validation_error import InputValidationError
+from odeo.exceptions.insufficient_balance_error import InsufficientBalanceError
+from odeo.exceptions.invalid_bank_error import InvalidBankError
+from odeo.exceptions.resourse_not_found_error import ResourceNotFoundError
 
 
 def authenticated(func):
@@ -83,3 +88,22 @@ class BaseService(object):
             return self._oauth.put(url, json=params, headers=headers)
 
         return None
+
+    @staticmethod
+    def _raise_exception_on_error(response: Response, success: callable):
+        content = response.json()
+        if response.status_code == 400 or 'error_code' in content:
+            error_code = content['error_code']
+            message = content['message']
+            if error_code == 40002:
+                raise InvalidBankError(message)
+            elif error_code == 40011:
+                raise InsufficientBalanceError(message)
+            elif error_code == 20002:
+                raise ResourceNotFoundError(message)
+            elif error_code == 10001:
+                raise InputValidationError(message)
+            elif error_code == 10000:
+                raise GeneralError(message)
+        elif response.status_code == 200:
+            return success(content)

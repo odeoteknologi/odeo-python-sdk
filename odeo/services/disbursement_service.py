@@ -1,6 +1,3 @@
-from odeo.exceptions.insufficient_balance_error import InsufficientBalanceError
-from odeo.exceptions.invalid_bank_error import InvalidBankError
-from odeo.exceptions.resourse_not_found_error import ResourceNotFoundError
 from odeo.models.bank import Bank
 from odeo.models.bank_account import BankAccount
 from odeo.models.disbursement import Disbursement
@@ -32,21 +29,7 @@ class DisbursementService(BaseService):
             'with_validation': with_validation
         })
 
-        return self._raise_exception_on_error(
-            response.json(), response, lambda c: BankAccount.from_json(c)
-        )
-
-    @staticmethod
-    def _raise_exception_on_error(content, response, success: callable):
-        if response.status_code == 400 and 'error_code' in content:
-            if content['error_code'] == 40002:
-                raise InvalidBankError(content['message'])
-            elif content['error_code'] == 40011:
-                raise InsufficientBalanceError(content['message'])
-            elif content['error_code'] == 20002:
-                raise ResourceNotFoundError(content['message'])
-        elif response.status_code == 200:
-            return success(content)
+        return self._raise_exception_on_error(response, lambda c: BankAccount.from_json(c))
 
     @authenticated
     def create_disbursement(
@@ -70,9 +53,7 @@ class DisbursementService(BaseService):
 
         response = self.request('POST', '/dg/v1/disbursements', params)
 
-        return self._raise_exception_on_error(
-            response.json(), response, lambda c: Disbursement.from_json(c)
-        )
+        return self._raise_exception_on_error(response, lambda c: Disbursement.from_json(c))
 
     @authenticated
     def get_disbursement(
@@ -82,6 +63,4 @@ class DisbursementService(BaseService):
         path = f"/dg/v1/disbursements/reference-id/{by_reference_id}" if by_reference_id is not None else path
         response = self.request('GET', path)
 
-        return self._raise_exception_on_error(
-            response.json(), response, lambda c: Disbursement.from_json(c)
-        )
+        return self._raise_exception_on_error(response, lambda c: Disbursement.from_json(c))
