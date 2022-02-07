@@ -59,6 +59,9 @@ class DisbursementService(BaseService):
     def get_disbursement(
             self, by_disbursement_id: int = None, by_reference_id: str = None
     ):
+        assert (by_disbursement_id is not None) ^ (by_reference_id is not None), \
+            'by_disbursement_id and by_reference_id parameters are mutually exclusive'
+
         path = f"/dg/v1/disbursements/{by_disbursement_id}" if by_disbursement_id is not None else ''
         path = f"/dg/v1/disbursements/reference-id/{by_reference_id}" if by_reference_id is not None else path
         response = self.request('GET', path)
