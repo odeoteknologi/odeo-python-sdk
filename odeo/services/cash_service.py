@@ -1,11 +1,19 @@
 from odeo.models.request import Request
-from odeo.services.base_service import BaseService
+from odeo.models.transfer import Transfer
+from odeo.services.base_service import BaseService, authenticated
 
 
 class CashService(BaseService):
 
+    @authenticated
     def create_bulk_transfers(self, requests: list[Request]):
-        return
+        params = {'requests': (list(map(lambda request: request.to_dict(), requests)))}
+        response = self.request('POST', '/cash/bulk-transfer', params)
+
+        return self._raise_exception_on_error(
+            response,
+            lambda c: list(map(lambda transfer: Transfer.from_json(transfer), c['transfers']))
+        )
 
     def list_transfers(
             self,
