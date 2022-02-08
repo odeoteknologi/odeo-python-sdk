@@ -1,10 +1,22 @@
+import dataclasses
 from dataclasses import dataclass
 
 
 @dataclass
-class Request:
-    sender_user_id: int
-    receiver_user_id: int
+class _BaseRequest:
+    receiver_user_id: int | str
     amount: int
     reference_id: str
-    note: str
+
+
+@dataclass
+class _DefaultRequest:
+    sender_user_id: int | str = None
+    note: str = None
+
+
+@dataclass
+class Request(_DefaultRequest, _BaseRequest):
+
+    def to_dict(self):
+        return dataclasses.asdict(self)
