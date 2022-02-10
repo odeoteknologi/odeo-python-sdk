@@ -2,6 +2,7 @@ from datetime import datetime
 
 from odeo.models.list_transfers_response import ListTransfersResponse
 from odeo.models.request import Request
+from odeo.models.topup import Topup
 from odeo.models.transfer import Transfer
 from odeo.services.base_service import BaseService, authenticated
 
@@ -42,8 +43,12 @@ class CashService(BaseService):
 
         return ListTransfersResponse.from_json(response.json())
 
+    @authenticated
     def create_va_topup(self, amount: int, user_id: int = None):
-        pass
+        params = {'amount': amount, 'user_id': user_id}
+        response = self.request('POST', '/cash/va-topup', params)
+
+        return self._raise_exception_on_error(response, lambda c: Topup.from_json(c))
 
     def find_active_va_topup(self, user_id: int = None):
         pass
