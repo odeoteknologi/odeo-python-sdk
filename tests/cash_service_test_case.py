@@ -457,6 +457,71 @@ class CashServiceTestCase(ServiceTestCase):
 
         self.assertEqual(str(ctx.exception), message)
 
+    def test_cancel_va_topup(self):
+        self.adapter.register_uri(
+            'POST',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/va-topup/cancel',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Content-Type': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'Xx6lyK8XK7FJmwzQPVLngIMFUaIq4e+cYyue/nw/ET8='
+            },
+            text=json.dumps({})
+        )
+
+        self.assertEqual({}, self.client.cash.cancel_va_topup())
+
+    def test_cancel_va_topup_with_user_id_parameter(self):
+        self.adapter.register_uri(
+            'POST',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/va-topup/cancel',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Content-Type': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'D1TXjaSBB5x+sCyzHgqz+hdXK0nu4fN6ClnZsRQYTPE='
+            },
+            text=json.dumps({})
+        )
+
+        self.assertEqual({}, self.client.cash.cancel_va_topup(123))
+
+    def test_cancel_va_topup_failed_no_active_topup_order(self):
+        self._create_failed_cancel_va_topup(GeneralError, 10000, 'Order not found')
+
+    def test_cancel_va_topup_failed_sub_user_does_not_exists(self):
+        self._create_failed_cancel_va_topup(GeneralError, 10000, 'User not found')
+
+    def test_cancel_va_topup_failed_not_the_order_owner(self):
+        self._create_failed_cancel_va_topup(
+            GeneralError, 10000, "You don't have credential to access this data."
+        )
+
+    def test_cancel_va_topup_failed_order_already_confirmed(self):
+        self._create_failed_cancel_va_topup(GeneralError, 10000, "Can't cancel this order.")
+
+    def _create_failed_cancel_va_topup(self, error, error_code, message):
+        self.adapter.register_uri(
+            'POST',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/va-topup/cancel',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Content-Type': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'D1TXjaSBB5x+sCyzHgqz+hdXK0nu4fN6ClnZsRQYTPE='
+            },
+            status_code=400,
+            text=json.dumps({
+                'message': message,
+                'status_code': 400,
+                'error_code': error_code
+            })
+        )
+        with self.assertRaises(error) as ctx:
+            self.client.cash.cancel_va_topup(123)
+        self.assertEqual(str(ctx.exception), message)
+
 
 if __name__ == '__main__':
     unittest.main()
