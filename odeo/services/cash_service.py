@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 from odeo.models.balance import Balance
+from odeo.models.transactions_history import TransactionsHistory
 from odeo.models.list_transfers_response import ListTransfersResponse
 from odeo.models.request import Request
 from odeo.models.topup import Topup
@@ -72,11 +73,28 @@ class CashService(BaseService):
 
         return self._raise_exception_on_error(response, lambda c: Balance.from_json(c))
 
-    def get_transactions(
+    @authenticated
+    def get_transactions_history(
             self,
-            user_ids: list[str] = None,
-            page_token: str = None,
+            user_ids: list[int] = None,
             start_date: int = None,
-            end_date: int = None
+            end_date: int = None,
+            page_token: str = None
     ):
-        pass
+        path = '/cash/transactions'
+        params = {}
+
+        if user_ids is not None:
+            path = '/cash/sub-user-transactions'
+            for i in range(0, len(user_ids)):
+                params[f'user_ids[{i}]'] = user_ids[i]
+        if start_date is not None:
+            params['start_date'] = int(start_date.timestamp())
+        if end_date is not None:
+            params['end_date'] = int(end_date.timestamp())
+        if page_token is not None:
+            params['page_token'] = page_token
+
+        response = self.request('GET', path, params)
+
+        return TransactionsHistory.from_json(response.json())
