@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from odeo.models.list_transfers_response import ListTransfersResponse
@@ -57,8 +58,12 @@ class CashService(BaseService):
 
         return self._raise_exception_on_error(response, lambda c: Topup.from_json(c))
 
+    @authenticated
     def cancel_va_topup(self, user_id: str = None):
-        pass
+        params = {'user_id': user_id} if user_id is not None else None
+        response = self.request('POST', '/cash/va-topup/cancel', params)
+
+        return self._raise_exception_on_error(response, lambda c: c)
 
     def get_balance(self, user_id: str = 'me'):
         pass
