@@ -4,7 +4,7 @@ from odeo.models.transfer import Transfer
 
 
 @dataclass
-class ListTransfersResponse:
+class TransfersList:
     transfers: list[Transfer]
     next_page_token: str = None
 

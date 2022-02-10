@@ -3,7 +3,7 @@ from datetime import datetime
 
 from odeo.models.balance import Balance
 from odeo.models.transactions_history import TransactionsHistory
-from odeo.models.list_transfers_response import ListTransfersResponse
+from odeo.models.transfers_list import TransfersList
 from odeo.models.request import Request
 from odeo.models.topup import Topup
 from odeo.models.transfer import Transfer
@@ -44,7 +44,7 @@ class CashService(BaseService):
 
         response = self.request('GET', '/cash/transfers', params)
 
-        return ListTransfersResponse.from_json(response.json())
+        return TransfersList.from_json(response.json())
 
     @authenticated
     def create_va_topup(self, amount: int, user_id: int = None):

@@ -9,7 +9,7 @@ from odeo.models.balance import Balance, Cash
 from odeo.models.cash_transaction import CashTransaction
 from odeo.models.channel import Channel
 from odeo.models.transactions_history import TransactionsHistory
-from odeo.models.list_transfers_response import ListTransfersResponse
+from odeo.models.transfers_list import TransfersList
 from odeo.models.request import Request
 from odeo.models.topup import Topup
 from odeo.models.transfer import Transfer
@@ -163,7 +163,7 @@ class CashServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            ListTransfersResponse(
+            TransfersList(
                 transfers=[
                     Transfer(
                         transfer_id='123',
@@ -202,7 +202,7 @@ class CashServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            ListTransfersResponse(
+            TransfersList(
                 transfers=[
                     Transfer(
                         transfer_id='123',
@@ -252,7 +252,7 @@ class CashServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            ListTransfersResponse(
+            TransfersList(
                 transfers=[
                     Transfer(
                         transfer_id='11',
