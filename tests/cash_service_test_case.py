@@ -5,6 +5,7 @@ from datetime import datetime
 import odeo.client
 from odeo.exceptions.general_error import GeneralError
 from odeo.exceptions.input_validation_error import InputValidationError
+from odeo.models.list_transfers_response import ListTransfersResponse
 from odeo.models.request import Request
 from odeo.models.transfer import Transfer
 from tests.service_test_case import ServiceTestCase
@@ -133,6 +134,147 @@ class CashServiceTestCase(ServiceTestCase):
                 )
             ])
         self.assertEqual(str(ctx.exception), message)
+
+    def test_list_transfers(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/transfers',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'YRHRKTH0L7nFSVGTO3Ng07KKBIys7olErXdtQFLVTio='
+            },
+            text=json.dumps({
+                'transfers': [{
+                    'transfer_id': '123',
+                    'sender_user_id': '456',
+                    'receiver_user_id': '789',
+                    'amount': 1000000,
+                    'reference_id': 'EXAMPLE-REF-ID-001',
+                    'created_at': '1612137600'
+                }]
+            })
+        )
+
+        self.assertEqual(
+            ListTransfersResponse(
+                transfers=[
+                    Transfer(
+                        transfer_id='123',
+                        sender_user_id='456',
+                        receiver_user_id='789',
+                        amount=1000000,
+                        reference_id='EXAMPLE-REF-ID-001',
+                        created_at=datetime(2021, 2, 1)
+                    )
+                ],
+            ),
+            self.client.cash.list_transfers()
+        )
+
+    def test_list_transfers_with_next_page_token(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/transfers',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'YRHRKTH0L7nFSVGTO3Ng07KKBIys7olErXdtQFLVTio='
+            },
+            text=json.dumps({
+                'transfers': [{
+                    'transfer_id': '123',
+                    'sender_user_id': '456',
+                    'receiver_user_id': '789',
+                    'amount': 1000000,
+                    'reference_id': 'EXAMPLE-REF-ID-001',
+                    'created_at': '1612137600'
+                }],
+                'next_page_token': 'abcdef'
+            })
+        )
+
+        self.assertEqual(
+            ListTransfersResponse(
+                transfers=[
+                    Transfer(
+                        transfer_id='123',
+                        sender_user_id='456',
+                        receiver_user_id='789',
+                        amount=1000000,
+                        reference_id='EXAMPLE-REF-ID-001',
+                        created_at=datetime(2021, 2, 1)
+                    )
+                ],
+                next_page_token='abcdef'
+            ),
+            self.client.cash.list_transfers()
+        )
+
+    def test_list_transfers_with_parameters(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/transfers',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': '9OFvffcuY/Jxg8wAFhvyidu8dLU9Ga/u5XbQas6e9hA='
+            },
+            text=json.dumps({
+                'transfers': [
+                    {
+                        'transfer_id': '11',
+                        'sender_user_id': '22',
+                        'receiver_user_id': '33',
+                        'amount': 1000000,
+                        'reference_id': 'REF-ID-111',
+                        'created_at': '1612137600'
+                    },
+                    {
+                        'transfer_id': '44',
+                        'sender_user_id': '55',
+                        'receiver_user_id': '66',
+                        'amount': 2000000,
+                        'reference_id': 'REF-ID-222',
+                        'created_at': '1612137600'
+                    }
+                ],
+                'next_page_token': 'ghijkl'
+            })
+        )
+
+        self.assertEqual(
+            ListTransfersResponse(
+                transfers=[
+                    Transfer(
+                        transfer_id='11',
+                        sender_user_id='22',
+                        receiver_user_id='33',
+                        amount=1000000,
+                        reference_id='REF-ID-111',
+                        created_at=datetime(2021, 2, 1)
+                    ),
+                    Transfer(
+                        transfer_id='44',
+                        sender_user_id='55',
+                        receiver_user_id='66',
+                        amount=2000000,
+                        reference_id='REF-ID-222',
+                        created_at=datetime(2021, 2, 1)
+                    )
+                ],
+                next_page_token='ghijkl'
+            ),
+            self.client.cash.list_transfers(
+                ['REF-ID-111', 'REF-ID-222'],
+                start_date=datetime(2021, 2, 1),
+                end_date=datetime(2021, 4, 3),
+                page_token='abcdef'
+            )
+        )
 
 
 if __name__ == '__main__':
