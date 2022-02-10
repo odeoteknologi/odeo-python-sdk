@@ -1,8 +1,7 @@
 import functools
 import json
 import time
-import urllib.parse
-from urllib.parse import urljoin
+from urllib.parse import unquote, urlencode, urljoin
 
 from requests import Response
 from requests_oauthlib import OAuth2Session
@@ -52,13 +51,16 @@ class BaseService(object):
             self,
             method: str,
             path: str,
-            params: dict = {}
+            params: dict = None
     ) -> Response | None:
-        query_string = urllib.parse.unquote(urllib.parse.urlencode(params)) if method == 'GET' else ''
+        query_string = ''
         request_body = ''
 
-        if method in ['POST', 'PUT'] and params != {}:
-            request_body = json.dumps(params, separators=(',', ':'))
+        if params is not None:
+            if method == 'GET':
+                query_string = unquote(urlencode(sorted(params.items())))
+            elif method in ['POST', 'PUT']:
+                request_body = json.dumps(params, separators=(',', ':'))
 
         timestamp = int(time.time())
         signature = generate_signature(
