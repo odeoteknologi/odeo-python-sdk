@@ -6,7 +6,9 @@ import odeo.client
 from odeo.exceptions.general_error import GeneralError
 from odeo.exceptions.input_validation_error import InputValidationError
 from odeo.models.balance import Balance, Cash
+from odeo.models.cash_transaction import CashTransaction
 from odeo.models.channel import Channel
+from odeo.models.transactions_history import TransactionsHistory
 from odeo.models.list_transfers_response import ListTransfersResponse
 from odeo.models.request import Request
 from odeo.models.topup import Topup
@@ -610,6 +612,222 @@ class CashServiceTestCase(ServiceTestCase):
 
         self.assertEqual(str(ctx.exception), message)
 
+    def test_get_transactions_history(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/transactions',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'mDAKk7c//3X7r4X6Q/G0EtlY0fq0Ix7xQG2Gn4oI/A4='
+            },
+            text=json.dumps({
+                'cash_transactions': [{
+                    'cash_transaction_id': '123',
+                    'user_id': '456',
+                    'amount': 1000000,
+                    'balance_before': 1000000,
+                    'balance_after': 2000000,
+                    'transaction_type': 'api_disbursement',
+                    'created_at': '1612137600'
+                }],
+                'next_page_token': 'abcdef'
+            })
+        )
 
-if __name__ == '__main__':
-    unittest.main()
+        self.assertEqual(
+            TransactionsHistory(
+                cash_transactions=[
+                    CashTransaction(
+                        cash_transaction_id='123',
+                        user_id='456',
+                        amount=1000000,
+                        balance_before=1000000,
+                        balance_after=2000000,
+                        transaction_type='api_disbursement',
+                        created_at=datetime(2021, 2, 1)
+                    )
+                ],
+                next_page_token='abcdef'
+            ),
+            self.client.cash.get_transactions_history()
+        )
+
+    def test_get_transactions_history_with_parameters(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/transactions',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'cONLC0e0B/lAd7k0NV3TP7gOHTAAR5O5VzX7O8hUf5k='
+            },
+            text=json.dumps({
+                'cash_transactions': [{
+                    'cash_transaction_id': '123',
+                    'user_id': '456',
+                    'amount': 1000000,
+                    'balance_before': 1000000,
+                    'balance_after': 2000000,
+                    'transaction_type': 'api_disbursement',
+                    'created_at': '1612137600'
+                }],
+                'next_page_token': 'abcdef'
+            })
+        )
+
+        self.assertEqual(
+            TransactionsHistory(
+                cash_transactions=[
+                    CashTransaction(
+                        cash_transaction_id='123',
+                        user_id='456',
+                        amount=1000000,
+                        balance_before=1000000,
+                        balance_after=2000000,
+                        transaction_type='api_disbursement',
+                        created_at=datetime(2021, 2, 1)
+                    )
+                ],
+                next_page_token='abcdef'
+            ),
+            self.client.cash.get_transactions_history(
+                start_date=datetime(2021, 2, 1),
+                end_date=datetime(2021, 4, 3),
+                page_token='ghijkl'
+            )
+        )
+
+    def test_get_sub_user_transactions_history(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/sub-user-transactions',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'Br3ynlMByEKQfm7IZFi96JQ3jHluDpuGPalutS49Vtk='
+            },
+            text=json.dumps({
+                'cash_transactions': [
+                    {
+                        'cash_transaction_id': '111',
+                        'user_id': '456',
+                        'amount': 1000000,
+                        'balance_before': 1000000,
+                        'balance_after': 2000000,
+                        'transaction_type': 'api_disbursement',
+                        'created_at': '1612137600'
+                    },
+                    {
+                        'cash_transaction_id': '222',
+                        'user_id': '789',
+                        'amount': 3000000,
+                        'balance_before': 3000000,
+                        'balance_after': 4000000,
+                        'transaction_type': 'api_disbursement',
+                        'created_at': '1617408000'
+                    }
+                ],
+                'next_page_token': 'abcdef'
+            })
+        )
+
+        self.assertEqual(
+            TransactionsHistory(
+                cash_transactions=[
+                    CashTransaction(
+                        cash_transaction_id='111',
+                        user_id='456',
+                        amount=1000000,
+                        balance_before=1000000,
+                        balance_after=2000000,
+                        transaction_type='api_disbursement',
+                        created_at=datetime(2021, 2, 1)
+                    ),
+                    CashTransaction(
+                        cash_transaction_id='222',
+                        user_id='789',
+                        amount=3000000,
+                        balance_before=3000000,
+                        balance_after=4000000,
+                        transaction_type='api_disbursement',
+                        created_at=datetime(2021, 4, 3)
+                    )
+                ],
+                next_page_token='abcdef'
+            ),
+            self.client.cash.get_transactions_history([456, 789])
+        )
+
+    def test_get_sub_user_transactions_history_with_parameters(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/sub-user-transactions',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'kFIBW9qN5Z3IKUR1blmXIwxgdluIPLffCw3Kz5sWSKU='
+            },
+            text=json.dumps({
+                'cash_transactions': [
+                    {
+                        'cash_transaction_id': '111',
+                        'user_id': '456',
+                        'amount': 1000000,
+                        'balance_before': 1000000,
+                        'balance_after': 2000000,
+                        'transaction_type': 'api_disbursement',
+                        'created_at': '1612137600'
+                    },
+                    {
+                        'cash_transaction_id': '222',
+                        'user_id': '789',
+                        'amount': 3000000,
+                        'balance_before': 3000000,
+                        'balance_after': 4000000,
+                        'transaction_type': 'api_disbursement',
+                        'created_at': '1617408000'
+                    }
+                ],
+                'next_page_token': 'abcdef'
+            })
+        )
+
+        self.assertEqual(
+            TransactionsHistory(
+                cash_transactions=[
+                    CashTransaction(
+                        cash_transaction_id='111',
+                        user_id='456',
+                        amount=1000000,
+                        balance_before=1000000,
+                        balance_after=2000000,
+                        transaction_type='api_disbursement',
+                        created_at=datetime(2021, 2, 1)
+                    ),
+                    CashTransaction(
+                        cash_transaction_id='222',
+                        user_id='789',
+                        amount=3000000,
+                        balance_before=3000000,
+                        balance_after=4000000,
+                        transaction_type='api_disbursement',
+                        created_at=datetime(2021, 4, 3)
+                    )
+                ],
+                next_page_token='abcdef'
+            ),
+            self.client.cash.get_transactions_history(
+                user_ids=[456, 789],
+                start_date=datetime(2021, 2, 1),
+                end_date=datetime(2021, 4, 3),
+                page_token='ghijkl'
+            )
+        )
+
+    if __name__ == '__main__':
+        unittest.main()
