@@ -50,8 +50,12 @@ class CashService(BaseService):
 
         return self._raise_exception_on_error(response, lambda c: Topup.from_json(c))
 
+    @authenticated
     def find_active_va_topup(self, user_id: int = None):
-        pass
+        params = {'user_id': user_id} if user_id is not None else {}
+        response = self.request('GET', '/cash/va-topup/active', params)
+
+        return self._raise_exception_on_error(response, lambda c: Topup.from_json(c))
 
     def cancel_va_topup(self, user_id: str = None):
         pass
