@@ -354,6 +354,109 @@ class CashServiceTestCase(ServiceTestCase):
             self.client.cash.create_va_topup(1000000, 123)
         self.assertEqual(str(ctx.exception), message)
 
+    def test_find_active_va_topup(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/va-topup/active',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': '9JcNSUOjeLKP0ENLp671MTl4rYBX55iEtg6Q/V0dNo0='
+            },
+            text=json.dumps({
+                'channels': [{
+                    'fee': '5000',
+                    'channel_id': 31,
+                    'pay_code': 'abcdef',
+                    'amount': 1000000,
+                    'total': 1005000
+                }],
+                'topup_id': '456',
+                'expires_at': '1612137600'
+            })
+        )
+
+        self.assertEqual(
+            Topup(
+                channels=[
+                    Channel(
+                        fee='5000',
+                        channel_id=31,
+                        pay_code='abcdef',
+                        amount=1000000,
+                        total=1005000
+                    )
+                ],
+                topup_id='456',
+                expires_at=datetime(2021, 2, 1)
+            ),
+            self.client.cash.find_active_va_topup()
+        )
+
+    def test_find_active_va_topup_with_user_id_parameter(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/va-topup/active',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'rdg9EpRwjKbHPRwos6L1clPGP15w6zHTUOUM+4uUk3A='
+            },
+            text=json.dumps({
+                'channels': [{
+                    'fee': '5000',
+                    'channel_id': 31,
+                    'pay_code': 'abcdef',
+                    'amount': 1000000,
+                    'total': 1005000
+                }],
+                'topup_id': '456',
+                'expires_at': '1612137600'
+            })
+        )
+
+        self.assertEqual(
+            Topup(
+                channels=[
+                    Channel(
+                        fee='5000',
+                        channel_id=31,
+                        pay_code='abcdef',
+                        amount=1000000,
+                        total=1005000
+                    )
+                ],
+                topup_id='456',
+                expires_at=datetime(2021, 2, 1)
+            ),
+            self.client.cash.find_active_va_topup(123)
+        )
+
+    def test_find_active_va_topup_failed_no_active_topup_order(self):
+        message = 'Order not found'
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/va-topup/active',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'rdg9EpRwjKbHPRwos6L1clPGP15w6zHTUOUM+4uUk3A='
+            },
+            text=json.dumps({
+                'message': message,
+                'status_code': 400,
+                'error_code': 10000
+            })
+        )
+
+        with self.assertRaises(GeneralError) as ctx:
+            self.client.cash.find_active_va_topup(123)
+
+        self.assertEqual(str(ctx.exception), message)
+
 
 if __name__ == '__main__':
     unittest.main()
