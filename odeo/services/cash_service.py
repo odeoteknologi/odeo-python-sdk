@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+from odeo.models.balance import Balance
 from odeo.models.list_transfers_response import ListTransfersResponse
 from odeo.models.request import Request
 from odeo.models.topup import Topup
@@ -65,8 +66,11 @@ class CashService(BaseService):
 
         return self._raise_exception_on_error(response, lambda c: c)
 
+    @authenticated
     def get_balance(self, user_id: str = 'me'):
-        pass
+        response = self.request('GET', f'/cash/{user_id}/balance')
+
+        return self._raise_exception_on_error(response, lambda c: Balance.from_json(c))
 
     def get_transactions(
             self,
