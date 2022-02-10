@@ -1,4 +1,4 @@
-from odeo.models.list_sub_user_response import ListSubUserResponse
+from odeo.models.sub_users_list import SubUsersList
 from odeo.models.sub_user import SubUser
 from odeo.services.base_service import BaseService, authenticated
 
@@ -10,7 +10,7 @@ class SubUserService(BaseService):
         params = {'page_token': page_token} if page_token is not None else {}
         response = self.request('GET', '/sub-users', params)
 
-        return ListSubUserResponse.from_json(response.json())
+        return SubUsersList.from_json(response.json())
 
     @authenticated
     def create_sub_user(self, email: str, name: str, phone_number: str):

@@ -4,7 +4,7 @@ from odeo.models.sub_user import SubUser
 
 
 @dataclass
-class ListSubUserResponse:
+class SubUsersList:
     sub_users: list[SubUser]
     next_page_token: str = None
 

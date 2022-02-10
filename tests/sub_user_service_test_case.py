@@ -4,7 +4,7 @@ import unittest
 import odeo.client
 from odeo.exceptions.general_error import GeneralError
 from odeo.exceptions.input_validation_error import InputValidationError
-from odeo.models.list_sub_user_response import ListSubUserResponse
+from odeo.models.sub_users_list import SubUsersList
 from odeo.models.sub_user import SubUser
 from tests.service_test_case import ServiceTestCase
 
@@ -33,7 +33,7 @@ class SubUserServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            ListSubUserResponse(
+            SubUsersList(
                 sub_users=[SubUser(123, 'Agus Hartono', '081234567890', 'agus@example.com')],
                 next_page_token='abcdef'
             ),
@@ -57,7 +57,7 @@ class SubUserServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            ListSubUserResponse(
+            SubUsersList(
                 sub_users=[],
                 next_page_token='abcdef'
             ),
@@ -86,7 +86,7 @@ class SubUserServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            ListSubUserResponse(
+            SubUsersList(
                 sub_users=[SubUser(123, 'Agus Hartono', '081234567890', 'agus@example.com')],
                 next_page_token='abcdef'
             ),
