@@ -5,6 +5,7 @@ from datetime import datetime
 import odeo.client
 from odeo.exceptions.general_error import GeneralError
 from odeo.exceptions.input_validation_error import InputValidationError
+from odeo.models.balance import Balance, Cash
 from odeo.models.channel import Channel
 from odeo.models.list_transfers_response import ListTransfersResponse
 from odeo.models.request import Request
@@ -520,6 +521,93 @@ class CashServiceTestCase(ServiceTestCase):
         )
         with self.assertRaises(error) as ctx:
             self.client.cash.cancel_va_topup(123)
+        self.assertEqual(str(ctx.exception), message)
+
+    def test_get_balance(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/me/balance',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': 'ms3Xm918ZnQ8rayEjAvnV86uKTxQLqFv/7M6F+SJ1kk='
+            },
+            text=json.dumps({
+                'cash': {
+                    'amount': 1000000,
+                    'currency': 'IDR',
+                    'formatted_amount': 'Rp1,000,000'
+                },
+                'locked_cash': {
+                    'amount': 100000,
+                    'currency': 'IDR',
+                    'formatted_amount': 'Rp100,000'
+                }
+            })
+        )
+
+        self.assertEqual(
+            Balance(
+                cash=Cash(1000000, 'IDR', 'Rp1,000,000'),
+                locked_cash=Cash(100000, 'IDR', 'Rp100,000')
+            ),
+            self.client.cash.get_balance()
+        )
+
+    def test_get_balance_with_user_id_parameter(self):
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/123/balance',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': '8ek7fHgiGmYXUDRO/7ygi2enSnxrAwEvEUDo13AJQJ8='
+            },
+            text=json.dumps({
+                'cash': {
+                    'amount': 1000000,
+                    'currency': 'IDR',
+                    'formatted_amount': 'Rp1,000,000'
+                },
+                'locked_cash': {
+                    'amount': 100000,
+                    'currency': 'IDR',
+                    'formatted_amount': 'Rp100,000'
+                }
+            })
+        )
+
+        self.assertEqual(
+            Balance(
+                cash=Cash(1000000, 'IDR', 'Rp1,000,000'),
+                locked_cash=Cash(100000, 'IDR', 'Rp100,000')
+            ),
+            self.client.cash.get_balance(123)
+        )
+
+    def test_get_balance_failed_user_does_not_exists(self):
+        message = ''
+        self.adapter.register_uri(
+            'GET',
+            odeo.client.DEVELOPMENT_BASE_URL + '/cash/123/balance',
+            request_headers={
+                'Authorization': 'Bearer ' + self.access_token,
+                'Accept': 'application/json',
+                'X-Odeo-Timestamp': '1612137600',
+                'X-Odeo-Signature': '8ek7fHgiGmYXUDRO/7ygi2enSnxrAwEvEUDo13AJQJ8='
+            },
+            text=json.dumps({
+                'message': message,
+                'status_code': 400,
+                'error_code': 10000
+            })
+        )
+
+        with self.assertRaises(GeneralError) as ctx:
+            self.client.cash.get_balance(123)
+
         self.assertEqual(str(ctx.exception), message)
 
 
