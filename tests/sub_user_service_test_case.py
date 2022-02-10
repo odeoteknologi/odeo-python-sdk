@@ -4,6 +4,7 @@ import unittest
 import odeo.client
 from odeo.exceptions.general_error import GeneralError
 from odeo.exceptions.input_validation_error import InputValidationError
+from odeo.models.list_sub_user_response import ListSubUserResponse
 from odeo.models.sub_user import SubUser
 from tests.service_test_case import ServiceTestCase
 
@@ -32,7 +33,10 @@ class SubUserServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            ([SubUser(123, 'Agus Hartono', '081234567890', 'agus@example.com')], 'abcdef'),
+            ListSubUserResponse(
+                sub_users=[SubUser(123, 'Agus Hartono', '081234567890', 'agus@example.com')],
+                next_page_token='abcdef'
+            ),
             self.client.sub_user.list_sub_users()
         )
 
@@ -52,7 +56,13 @@ class SubUserServiceTestCase(ServiceTestCase):
             })
         )
 
-        self.assertEqual(([], 'abcdef'), self.client.sub_user.list_sub_users())
+        self.assertEqual(
+            ListSubUserResponse(
+                sub_users=[],
+                next_page_token='abcdef'
+            ),
+            self.client.sub_user.list_sub_users()
+        )
 
     def test_list_sub_users_with_page_token(self):
         self.adapter.register_uri(
@@ -76,7 +86,10 @@ class SubUserServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            ([SubUser(123, 'Agus Hartono', '081234567890', 'agus@example.com')], 'abcdef'),
+            ListSubUserResponse(
+                sub_users=[SubUser(123, 'Agus Hartono', '081234567890', 'agus@example.com')],
+                next_page_token='abcdef'
+            ),
             self.client.sub_user.list_sub_users('abcdef')
         )
 
