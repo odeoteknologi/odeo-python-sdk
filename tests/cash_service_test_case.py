@@ -1,18 +1,9 @@
 import json
 import unittest
-from datetime import datetime
 
 import odeo.client
-from odeo.exceptions.general_error import GeneralError
-from odeo.exceptions.input_validation_error import InputValidationError
-from odeo.models.balance import Balance, Cash
-from odeo.models.cash_transaction import CashTransaction
-from odeo.models.channel import Channel
-from odeo.models.transactions_history import TransactionsHistory
-from odeo.models.transfers_list import TransfersList
-from odeo.models.request import Request
-from odeo.models.topup import Topup
-from odeo.models.transfer import Transfer
+from odeo.exceptions import GeneralError, InputValidationError
+from odeo.models.cash import *
 from tests.service_test_case import ServiceTestCase
 
 

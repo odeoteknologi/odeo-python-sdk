@@ -7,11 +7,7 @@ from requests import Response
 from requests_oauthlib import OAuth2Session
 
 from odeo.api_signature import generate_signature
-from odeo.exceptions.general_error import GeneralError
-from odeo.exceptions.input_validation_error import InputValidationError
-from odeo.exceptions.insufficient_balance_error import InsufficientBalanceError
-from odeo.exceptions.invalid_bank_error import InvalidBankError
-from odeo.exceptions.resourse_not_found_error import ResourceNotFoundError
+from odeo.exceptions import *
 
 
 def authenticated(func):

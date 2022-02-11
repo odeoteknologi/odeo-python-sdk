@@ -2,10 +2,8 @@ import json
 import unittest
 
 import odeo.client
-from odeo.exceptions.general_error import GeneralError
-from odeo.exceptions.input_validation_error import InputValidationError
-from odeo.models.sub_users_list import SubUsersList
-from odeo.models.sub_user import SubUser
+from odeo.exceptions import GeneralError, InputValidationError
+from odeo.models.sub_user import *
 from tests.service_test_case import ServiceTestCase
 
 

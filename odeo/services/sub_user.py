@@ -1,6 +1,5 @@
-from odeo.models.sub_users_list import SubUsersList
-from odeo.models.sub_user import SubUser
-from odeo.services.base_service import BaseService, authenticated
+from odeo.models.sub_user import *
+from odeo.services.base import *
 
 
 class SubUserService(BaseService):

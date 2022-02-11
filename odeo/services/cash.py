@@ -1,13 +1,7 @@
-import json
 from datetime import datetime
 
-from odeo.models.balance import Balance
-from odeo.models.transactions_history import TransactionsHistory
-from odeo.models.transfers_list import TransfersList
-from odeo.models.request import Request
-from odeo.models.topup import Topup
-from odeo.models.transfer import Transfer
-from odeo.services.base_service import BaseService, authenticated
+from odeo.models.cash import Balance, Request, Topup, TransactionsHistory, Transfer, TransfersList
+from odeo.services.base import *
 
 
 class CashService(BaseService):
@@ -77,8 +71,8 @@ class CashService(BaseService):
     def get_transactions_history(
             self,
             user_ids: list[int] = None,
-            start_date: int = None,
-            end_date: int = None,
+            start_date: datetime = None,
+            end_date: datetime = None,
             page_token: str = None
     ):
         path = '/cash/transactions'

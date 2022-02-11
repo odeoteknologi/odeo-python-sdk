@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-class Status(Enum):
+class PaymentStatus(Enum):
     PAYMENT_VERIFICATION_IS_ON_PROGRESS = 30000
     PAYMENT_IS_COMPLETED_OR_PAID = 50000
     SUSPECT_PAYMENT = 80000
@@ -15,7 +15,7 @@ class Payment:
     payment_id: int
     amount: int
     fee: int
-    status: Status
+    status: PaymentStatus
     reference_id: str
 
     @classmethod
@@ -24,6 +24,6 @@ class Payment:
             payment_id=json.get('payment_id'),
             amount=json.get('amount'),
             fee=json.get('fee'),
-            status=Status(json.get('status')),
+            status=PaymentStatus(json.get('status')),
             reference_id=json.get('reference_id')
         )

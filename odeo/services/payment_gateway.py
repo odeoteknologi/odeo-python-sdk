@@ -1,5 +1,5 @@
-from odeo.models.payment import Payment
-from odeo.services.base_service import BaseService, authenticated
+from odeo.models.payment_gateway import Payment
+from odeo.services.base import *
 
 
 class PaymentGatewayService(BaseService):

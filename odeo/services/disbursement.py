@@ -1,7 +1,5 @@
-from odeo.models.bank import Bank
-from odeo.models.bank_account import BankAccount
-from odeo.models.disbursement import Disbursement
-from odeo.services.base_service import BaseService, authenticated
+from odeo.models.disbursement import Bank, BankAccount, Disbursement
+from odeo.services.base import *
 
 
 class DisbursementService(BaseService):

@@ -4,11 +4,11 @@ from oauthlib.oauth2 import BackendApplicationClient
 from requests.adapters import BaseAdapter
 from requests_oauthlib import OAuth2Session
 
-from odeo.services.base_service import BaseService
-from odeo.services.cash_service import CashService
-from odeo.services.disbursement_service import DisbursementService
-from odeo.services.payment_gateway_service import PaymentGatewayService
-from odeo.services.sub_user_service import SubUserService
+from odeo.services.base import BaseService
+from odeo.services.cash import CashService
+from odeo.services.disbursement import DisbursementService
+from odeo.services.payment_gateway import PaymentGatewayService
+from odeo.services.sub_user import SubUserService
 
 PRODUCTION_BASE_URL = 'https://api.odeo.co.id'
 DEVELOPMENT_BASE_URL = 'https://odeo-core-api.dev.odeo.co.id'

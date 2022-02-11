@@ -2,7 +2,7 @@ import json
 import unittest
 
 import odeo.client
-from odeo.models.payment import Payment, Status
+from odeo.models.payment_gateway import *
 from tests.service_test_case import ServiceTestCase
 
 
@@ -32,7 +32,7 @@ class PaymentGatewayServiceTestCase(ServiceTestCase):
                 123,
                 1000000,
                 3000,
-                Status.PAYMENT_VERIFICATION_IS_ON_PROGRESS,
+                PaymentStatus.PAYMENT_VERIFICATION_IS_ON_PROGRESS,
                 'EXAMPLE-REF-ID-001'
             ),
             self.client.payment_gateway.get_payment(by_payment_id=123)
@@ -63,7 +63,7 @@ class PaymentGatewayServiceTestCase(ServiceTestCase):
                 123,
                 1000000,
                 3000,
-                Status.PAYMENT_VERIFICATION_IS_ON_PROGRESS,
+                PaymentStatus.PAYMENT_VERIFICATION_IS_ON_PROGRESS,
                 'EXAMPLE-REF-ID-001'
             ),
             self.client.payment_gateway.get_payment(by_reference_id='EXAMPLE-REF-ID-001')
