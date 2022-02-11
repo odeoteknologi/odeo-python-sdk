@@ -12,6 +12,8 @@ class Bank:
 
     @classmethod
     def from_json(cls, json):
+        """Convert from JSON dictionary to :class:`Bank` object"""
+
         return Bank(
             bank_id=json.get('bank_id'),
             name=json.get('name'),
@@ -43,6 +45,8 @@ class BankAccount:
 
     @classmethod
     def from_json(cls, json):
+        """Convert from JSON dictionary to :class:`BankAccount` object"""
+
         created_at = json.get('created_at')
         if created_at is not None:
             created_at = datetime.utcfromtimestamp(float(created_at))
@@ -89,6 +93,8 @@ class Disbursement:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`Disbursement` object"""
+
         created_at = json.get('created_at')
         if created_at is not None:
             created_at = datetime.utcfromtimestamp(float(created_at))
