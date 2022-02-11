@@ -31,32 +31,44 @@ class Client(BaseService):
         )
 
     @property
-    def authentication(self):
+    def authentication(self) -> OAuth2Session:
+        """OAuth 2 session object"""
+
         return self._oauth
 
     def set_transport_adapter(self, prefix: str, adapter: BaseAdapter):
+        """Override network transport adapter used in the Requests calls"""
+
         self._oauth.mount(prefix, adapter)
 
     @cached_property
     def disbursement(self) -> DisbursementService:
+        """Cached Disbursement service group object"""
+
         return DisbursementService(
             self._oauth, self._base_url, self._client_secret, self._signing_key
         )
 
     @cached_property
     def payment_gateway(self) -> PaymentGatewayService:
+        """Cached Payment Gateway service group object"""
+
         return PaymentGatewayService(
             self._oauth, self._base_url, self._client_secret, self._signing_key
         )
 
     @cached_property
     def sub_user(self) -> SubUserService:
+        """Cached Sub User service group object"""
+
         return SubUserService(
             self._oauth, self._base_url, self._client_secret, self._signing_key
         )
 
     @cached_property
     def cash(self) -> CashService:
+        """Cached Cash service group object"""
+
         return CashService(
             self._oauth, self._base_url, self._client_secret, self._signing_key
         )
