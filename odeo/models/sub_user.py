@@ -10,6 +10,8 @@ class SubUser:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`SubUser` object"""
+
         return cls(
             user_id=json.get('user_id'),
             name=json.get('name'),
@@ -25,6 +27,8 @@ class SubUsersList:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`SubUsersList` object"""
+
         if 'sub_users' in json:
             sub_users = list(map(lambda s: SubUser.from_json(s), json.get('sub_users')))
 
