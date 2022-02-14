@@ -11,6 +11,8 @@ class Cash:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`Cash` object"""
+
         return cls(
             amount=json.get('amount'),
             currency=json.get('currency'),
@@ -25,6 +27,8 @@ class Balance:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`Balance` object"""
+
         return cls(
             cash=Cash.from_json(json.get('cash')),
             locked_cash=Cash.from_json(json.get('locked_cash'))
@@ -48,6 +52,8 @@ class _DefaultRequest:
 class Request(_DefaultRequest, _BaseRequest):
 
     def to_dict(self):
+        """Convert :class:`Request` object to dictionary data type"""
+
         return dataclasses.asdict(self)
 
 
@@ -61,6 +67,8 @@ class Channel:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`Channel`"""
+
         return cls(
             fee=json.get('fee'),
             channel_id=json.get('channel_id'),
@@ -78,6 +86,8 @@ class Topup:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`Topup`"""
+
         expires_at = json.get('expires_at')
         if expires_at is not None:
             expires_at = datetime.utcfromtimestamp(float(expires_at))
@@ -101,6 +111,8 @@ class CashTransaction:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`CashTransaction`"""
+
         created_at = json.get('created_at')
         if created_at is not None:
             created_at = datetime.utcfromtimestamp(float(created_at))
@@ -123,6 +135,8 @@ class TransactionsHistory:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`TransactionHistory`"""
+
         if 'cash_transactions' in json:
             cash_transactions = list(
                 map(lambda c: CashTransaction.from_json(c), json.get('cash_transactions'))
@@ -130,8 +144,7 @@ class TransactionsHistory:
 
             return cls(
                 cash_transactions=cash_transactions,
-                next_page_token=json.get('next_page_token') if 'next_page_token' in json else None
-            )
+                next_page_token=json.get('next_page_token') if 'next_page_token' in json else None            )
 
 
 @dataclass
@@ -145,6 +158,8 @@ class Transfer(_DefaultRequest, _BaseRequest, _BaseTransfer):
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`Transfer`"""
+
         created_at = json.get('created_at')
         if created_at is not None:
             created_at = datetime.utcfromtimestamp(float(created_at))
@@ -167,6 +182,8 @@ class TransfersList:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`TransfersList`"""
+
         if 'transfers' in json:
             transfers = list(map(lambda t: Transfer.from_json(t), json.get('transfers')))
 
