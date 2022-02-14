@@ -20,6 +20,8 @@ class Payment:
 
     @classmethod
     def from_json(cls, json: dict):
+        """Convert from JSON dictionary to :class:`Payment` object"""
+
         return cls(
             payment_id=json.get('payment_id'),
             amount=json.get('amount'),
