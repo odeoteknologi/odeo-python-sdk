@@ -37,14 +37,14 @@ class Balance:
 
 @dataclass
 class _BaseRequest:
-    receiver_user_id: int | str
+    receiver_user_id: int
     amount: int
     reference_id: str
 
 
 @dataclass
 class _DefaultRequest:
-    sender_user_id: int | str = None
+    sender_user_id: int = None
     note: str = None
 
 
@@ -59,7 +59,7 @@ class Request(_DefaultRequest, _BaseRequest):
 
 @dataclass
 class Channel:
-    fee: int | str
+    fee: int
     channel_id: int
     pay_code: str
     amount: int
@@ -70,7 +70,7 @@ class Channel:
         """Convert from JSON dictionary to :class:`Channel`"""
 
         return cls(
-            fee=json.get('fee'),
+            fee=int(json.get('fee')),
             channel_id=json.get('channel_id'),
             pay_code=json.get('pay_code'),
             amount=json.get('amount'),
@@ -144,7 +144,7 @@ class TransactionsHistory:
 
             return cls(
                 cash_transactions=cash_transactions,
-                next_page_token=json.get('next_page_token') if 'next_page_token' in json else None            )
+                next_page_token=json.get('next_page_token') if 'next_page_token' in json else None)
 
 
 @dataclass
@@ -166,8 +166,8 @@ class Transfer(_DefaultRequest, _BaseRequest, _BaseTransfer):
 
         return cls(
             transfer_id=json.get('transfer_id'),
-            sender_user_id=json.get('sender_user_id'),
-            receiver_user_id=json.get('receiver_user_id'),
+            sender_user_id=int(json.get('sender_user_id')),
+            receiver_user_id=int(json.get('receiver_user_id')),
             amount=json.get('amount'),
             reference_id=json.get('reference_id'),
             note=json.get('note'),

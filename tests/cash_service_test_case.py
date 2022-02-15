@@ -8,6 +8,7 @@ from tests.service_test_case import ServiceTestCase
 
 
 class CashServiceTestCase(ServiceTestCase):
+
     def test_create_bulk_transfers(self):
         self.adapter.register_uri(
             'POST',
@@ -34,8 +35,8 @@ class CashServiceTestCase(ServiceTestCase):
         self.assertEqual(
             [Transfer(
                 transfer_id='123',
-                sender_user_id='456',
-                receiver_user_id='789',
+                sender_user_id=456,
+                receiver_user_id=789,
                 amount=1000000,
                 reference_id='EXAMPLE-REF-ID-001',
                 note='Example description',
@@ -77,8 +78,8 @@ class CashServiceTestCase(ServiceTestCase):
         self.assertEqual(
             [Transfer(
                 transfer_id='123',
-                sender_user_id='456',
-                receiver_user_id='789',
+                sender_user_id=456,
+                receiver_user_id=789,
                 amount=1000000,
                 reference_id='EXAMPLE-REF-ID-001',
                 created_at=datetime(2021, 2, 1)
@@ -158,8 +159,8 @@ class CashServiceTestCase(ServiceTestCase):
                 transfers=[
                     Transfer(
                         transfer_id='123',
-                        sender_user_id='456',
-                        receiver_user_id='789',
+                        sender_user_id=456,
+                        receiver_user_id=789,
                         amount=1000000,
                         reference_id='EXAMPLE-REF-ID-001',
                         created_at=datetime(2021, 2, 1)
@@ -197,8 +198,8 @@ class CashServiceTestCase(ServiceTestCase):
                 transfers=[
                     Transfer(
                         transfer_id='123',
-                        sender_user_id='456',
-                        receiver_user_id='789',
+                        sender_user_id=456,
+                        receiver_user_id=789,
                         amount=1000000,
                         reference_id='EXAMPLE-REF-ID-001',
                         created_at=datetime(2021, 2, 1)
@@ -247,16 +248,16 @@ class CashServiceTestCase(ServiceTestCase):
                 transfers=[
                     Transfer(
                         transfer_id='11',
-                        sender_user_id='22',
-                        receiver_user_id='33',
+                        sender_user_id=22,
+                        receiver_user_id=33,
                         amount=1000000,
                         reference_id='REF-ID-111',
                         created_at=datetime(2021, 2, 1)
                     ),
                     Transfer(
                         transfer_id='44',
-                        sender_user_id='55',
-                        receiver_user_id='66',
+                        sender_user_id=55,
+                        receiver_user_id=66,
                         amount=2000000,
                         reference_id='REF-ID-222',
                         created_at=datetime(2021, 2, 1)
@@ -299,7 +300,7 @@ class CashServiceTestCase(ServiceTestCase):
             Topup(
                 channels=[
                     Channel(
-                        fee='5000',
+                        fee=5000,
                         channel_id=31,
                         pay_code='abcdef',
                         amount=1000000,
@@ -375,7 +376,7 @@ class CashServiceTestCase(ServiceTestCase):
             Topup(
                 channels=[
                     Channel(
-                        fee='5000',
+                        fee=5000,
                         channel_id=31,
                         pay_code='abcdef',
                         amount=1000000,
@@ -415,7 +416,7 @@ class CashServiceTestCase(ServiceTestCase):
             Topup(
                 channels=[
                     Channel(
-                        fee='5000',
+                        fee=5000,
                         channel_id=31,
                         pay_code='abcdef',
                         amount=1000000,

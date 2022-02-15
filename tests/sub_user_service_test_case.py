@@ -110,7 +110,7 @@ class SubUserServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            SubUser('123', 'Agus Hartono', '081234567890', 'agus@example.com'),
+            SubUser(123, 'Agus Hartono', '081234567890', 'agus@example.com'),
             self.client.sub_user.create_sub_user(
                 'agus@example.com', 'Agus Hartono', '081234567890'
             )
@@ -187,7 +187,7 @@ class SubUserServiceTestCase(ServiceTestCase):
         )
 
         self.assertEqual(
-            SubUser('123', 'Agus Hartono', '081234567890', 'agus@example.com'),
+            SubUser(123, 'Agus Hartono', '081234567890', 'agus@example.com'),
             self.client.sub_user.update_sub_user(
                 123, 'agus@example.com', 'Agus Hartono', '081234567890'
             )
