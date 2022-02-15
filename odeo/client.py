@@ -15,6 +15,33 @@ DEVELOPMENT_BASE_URL = 'https://odeo-core-api.dev.odeo.co.id'
 
 
 class Client(BaseService):
+    """Odeo For Business API SDK client
+
+    To create a new client object, you need to provide at the minimum
+    the ``client_id``, ``client_secret``, and ``signing_key`` parameters
+
+    Example::
+
+        from odeo.client import Client
+
+        client = Client(client_id='…', client_secret='…', signing_key='…')
+
+    By default, the client will access the development API server, to access
+    production API server set the ``base_url`` parameter to ``PRODUCTION_BASE_URL``
+    constant
+
+    Example::
+
+        from odeo.client import Client, PRODUCTION_BASE_URL
+
+        client = Client(
+            client_id='…',
+            client_secret='…',
+            signing_key='…',
+            base_url=PRODUCTION_BASE_URL
+        )
+    """
+
     client: BackendApplicationClient
 
     def __init__(
