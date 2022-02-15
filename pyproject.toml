@@ -5,6 +5,10 @@ description = "Python library for Odeo For Business API"
 license = "MIT"
 authors = ["Rudi <rudi@odeo.co.id>"]
 readme = "README.md"
+homepage = "https://docs.odeo.co.id"
+repository = "https://github.com/odeoteknologi/odeo-python-sdk"
+documentation = "https://odeo-python-sdk.readthedocs.io"
+packages = [{ include = "odeo" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
