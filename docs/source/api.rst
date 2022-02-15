@@ -39,6 +39,8 @@ Data Classes
 
 .. automodule:: odeo.models.payment_gateway
 
+    .. autoclass:: PaymentStatus
+
     .. autoclass:: Payment
         :members:
 

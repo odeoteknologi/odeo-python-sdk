@@ -3,6 +3,15 @@ from enum import Enum
 
 
 class PaymentStatus(Enum):
+    """Payment order statuses
+    
+    **PAYMENT_VERIFICATION_IS_ON_PROGRESS**\n
+    **PAYMENT_IS_COMPLETED_OR_PAID**\n
+    **SUSPECT_PAYMENT**\n
+    **FAILED_PAYMENT**\n
+    **PAYMENT_FAILED_REJECTED_BY_MERCHANT**\n
+    """
+
     PAYMENT_VERIFICATION_IS_ON_PROGRESS = 30000
     PAYMENT_IS_COMPLETED_OR_PAID = 50000
     SUSPECT_PAYMENT = 80000
