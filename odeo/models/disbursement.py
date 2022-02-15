@@ -110,10 +110,10 @@ class Disbursement:
     customer_name: str
     amount: int
     fee: int
-    description: str | None
     reference_id: str
     status: DisbursementStatus
     created_at: datetime
+    description: str = None
 
     @classmethod
     def from_json(cls, json: dict):

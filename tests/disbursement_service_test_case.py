@@ -156,10 +156,10 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 'Agus Hartono',
                 1000000,
                 5000,
-                'Example fund disbursement',
                 'EXAMPLE-REF-ID-001',
                 DisbursementStatus.PENDING_DISBURSE_INQUIRY,
-                datetime(2021, 2, 1)
+                datetime(2021, 2, 1),
+                'Example fund disbursement'
             ),
             self.client.disbursement.create_disbursement(
                 '1234567890',
@@ -205,7 +205,6 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 'Agus Hartono',
                 1000000,
                 5000,
-                None,
                 'EXAMPLE-REF-ID-001',
                 DisbursementStatus.PENDING_DISBURSE_INQUIRY,
                 datetime(2021, 2, 1)
@@ -292,10 +291,10 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 'Agus Hartono',
                 1000000,
                 5000,
-                'Example fund disbursement',
                 'EXAMPLE-REF-ID-001',
                 DisbursementStatus.PENDING_DISBURSE_INQUIRY,
-                datetime(2021, 2, 1)
+                datetime(2021, 2, 1),
+                'Example fund disbursement'
             ),
             self.client.disbursement.get_disbursement(by_disbursement_id=123)
         )
@@ -366,10 +365,10 @@ class DisbursementServiceTestCase(ServiceTestCase):
                 'Agus Hartono',
                 1000000,
                 5000,
-                'Example fund disbursement',
                 'EXAMPLE-REF-ID-001',
                 DisbursementStatus.PENDING_DISBURSE_INQUIRY,
-                datetime(2021, 2, 1)
+                datetime(2021, 2, 1),
+                'Example fund disbursement'
             ),
             self.client.disbursement.get_disbursement(by_reference_id='EXAMPLE-REF-ID-001')
         )
