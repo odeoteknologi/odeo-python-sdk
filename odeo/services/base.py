@@ -48,7 +48,7 @@ class BaseService(object):
             method: str,
             path: str,
             params: dict = None
-    ) -> Response | None:
+    ) -> Response:
         query_string = ''
         request_body = ''
 
@@ -84,8 +84,6 @@ class BaseService(object):
         elif method == 'PUT':
             headers |= {'Content-Type': 'application/json'}
             return self._oauth.put(url, json=params, headers=headers)
-
-        return None
 
     @staticmethod
     def _raise_exception_on_error(response: Response, success: callable):
