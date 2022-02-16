@@ -7,13 +7,9 @@
 Python library for calling Odeo For Business API, such as _Disbursement_, _Payment Gateway_, _Cash_, and _Sub Users_
 services.
 
-## Requirements
-
-The SDK supports the following Python versions:
-
-- Python 3.9 and later
-
 ## Installation
+
+The SDK currently supports Python 3.9 and later.
 
 To use Odeo Python SDK, install the latest version with `pip`:
 
