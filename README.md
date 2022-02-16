@@ -1,8 +1,8 @@
 # Odeo Python SDK
 
-[![PyPI](https://img.shields.io/pypi/v/odeo-python-sdk)](https://pypi.org/project/odeo-python-sdk)
+[![PyPI version](https://badge.fury.io/py/odeo-python-sdk.svg)](https://pypi.org/project/odeo-python-sdk)
 [![Documentation Status](https://readthedocs.org/projects/odeo-python-sdk/badge/?version=latest)](https://odeo-python-sdk.readthedocs.io/en/latest/?badge=latest)
-![PyPI - License](https://img.shields.io/pypi/l/odeo-python-sdk)
+[![PyPI - License](https://img.shields.io/pypi/l/odeo-python-sdk)](https://opensource.org/licenses/MIT)
 
 Python library for calling Odeo For Business API, such as _Disbursement_, _Payment Gateway_, _Cash_, and _Sub Users_
 services.
