@@ -1,5 +1,5 @@
-API
-===
+API Reference
+=============
 
 Classes
 --------------
@@ -91,3 +91,8 @@ Exceptions
     .. autoexception:: InsufficientBalanceError
     .. autoexception:: InvalidBankError
     .. autoexception:: ResourceNotFoundError
+
+Functions
+---------
+
+.. autofunction:: odeo.api_signature.generate_signature
