@@ -5,6 +5,15 @@ from odeo.services.base import *
 
 
 class CashService(BaseService):
+    """Cash API service
+
+    The group functions for all Cash service endpoints
+
+    Example::
+
+        # Create VA top up order
+       topup = client.cash.create_va_topup(amount=100000)
+    """
 
     @authenticated
     def create_bulk_transfers(self, requests: list[Request]):

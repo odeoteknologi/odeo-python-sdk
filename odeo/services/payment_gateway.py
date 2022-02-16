@@ -3,6 +3,15 @@ from odeo.services.base import *
 
 
 class PaymentGatewayService(BaseService):
+    """Payment Gateway API service
+
+    The group functions for all Payment Gateway service endpoints
+
+    Example::
+
+        # Get specific payment order detail by its ID
+        payment = client.payment_gateway.get_payment(by_payment_id=123)
+    """
 
     @authenticated
     def get_payment(self, by_payment_id: int = None, by_reference_id: str = None):

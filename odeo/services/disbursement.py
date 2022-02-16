@@ -3,6 +3,15 @@ from odeo.services.base import *
 
 
 class DisbursementService(BaseService):
+    """Disbursement API service
+
+    The group functions for all Disbursement service endpoints
+
+    Example::
+
+        # Get supported banks list
+        banks = client.disbursement.get_banks()
+    """
 
     @authenticated
     def get_banks(self):

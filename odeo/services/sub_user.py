@@ -3,6 +3,15 @@ from odeo.services.base import *
 
 
 class SubUserService(BaseService):
+    """Sub User API service
+
+    The group functions for all Sub User service endpoints
+
+    Example::
+
+        # Retrieve the list of current account sub users
+        sub_users = client.sub_user.list_sub_users()
+    """
 
     @authenticated
     def list_sub_users(self, page_token: str = None):
